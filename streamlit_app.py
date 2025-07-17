@@ -33,6 +33,15 @@ if ingredients_list:
         smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/" + fruit_chosen)
         sf_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
 
+        if smoothiefroot_response.status_code == 200:
+          try:
+            data = smoothiefroot_response.json()
+            st.dataframe(data)
+          except ValueError:
+            st.error("The API returned a non-JSON response.")
+        else:
+          st.error(f"API request failed with status {smoothiefroot_response.status_code}")
+
     my_insert_stmt = f"""insert into smoothies.public.orders(ingredients, name_on_order)
             values ('""" + ingredients_string + """','"""+name_on_order+ """')"""
 
